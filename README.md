@@ -14,15 +14,16 @@ How to monitor NTPD server with ELK
 
 Record peer statistics. Each NTP packet or reference clock update received appends one line to the peerstats
 
-Units 	Description
-MJD 	date
-s 	time past midnight
-IP 	source address
-hex 	status word
-s 	clock offset
-s 	roundtrip delay
-s 	dispersion
-s 	RMS jitter
+| Units | Description | 
+|-------|-------| 
+| MJD | date | 
+| s | time past midnight | 
+| IP | source address | 
+| hex | status word | 
+| s | clock offset | 
+| s | roundtrip delay | 
+| s | dispersion | 
+| s | RMS jitter | 
 
     tailf /var/log/ntpstats/peerstats
     58927 1293.735 91.224.149.41 941a -0.031646296 0.047783430 0.019218732 0.002787419
@@ -40,7 +41,7 @@ Each hour one line is appended to the sysstats file set in the following format
 | s  | time past midnight |
 | s  | time since reset |
 |  | packets received |
-| | packets for this host |
+| | packets generated |
 | | current versions |
 | | old version |
 | | access denied |
