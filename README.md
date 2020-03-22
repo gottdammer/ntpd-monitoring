@@ -5,6 +5,7 @@ How to monitor NTPD server with ELK
 ## Activate ntpd logs
 
 Update the ntpd configuration
+
       vim /etc/ntp.conf
       statsdir /var/log/ntpstats/
       statistics peerstats sysstats
