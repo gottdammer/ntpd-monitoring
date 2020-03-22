@@ -2,6 +2,13 @@
 
 How to monitor NTPD server with ELK
 
+## Table of contents
+* [Activate ntpd logs](#activate-ntpd-logs)
+	* [peerstats documentation](#peerstats-documentation)
+ 	* [sysstats documentation](#sysstats-documentation)
+* [Counting NTP clients](#counting-ntp-clients)
+* [Expected logs](#expected-logs)
+       
 ## Activate ntpd logs
 
 Update the ntpd configuration
@@ -64,7 +71,7 @@ Each hour one line is appended to the sysstats file set in the following format
   
 ## Counting NTP clients
 
-### logs results
+## Expected logs
 
       [root@localhost ntpstats]# ll
       total 740
