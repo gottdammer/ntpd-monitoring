@@ -4,12 +4,17 @@ How to monitor NTPD server with ELK
 
 ## Activate ntpd logs
 
+Update the ntpd configuration
       vim /etc/ntp.conf
       statsdir /var/log/ntpstats/
       statistics peerstats sysstats
       filegen peerstats file peerstats.log type day enable
       filegen sysstats file sysstats.log type none enable
  
+Restart the daemon
+
+      systemctl ntpd restart
+      
 ### peerstats 
 
 Record peer statistics. Each NTP packet or reference clock update received appends one line to the peerstats
