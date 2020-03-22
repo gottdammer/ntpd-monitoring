@@ -16,7 +16,7 @@ Restart the daemon
 
       systemctl ntpd restart
       
-### peerstats 
+### peerstats documentation
 
 Record peer statistics. Each NTP packet or reference clock update received appends one line to the peerstats
 
@@ -37,7 +37,7 @@ Record peer statistics. Each NTP packet or reference clock update received appen
     58927 1848.736 193.141.27.6 941a -0.034690903 0.054624853 0.015236537 0.001218647
     58927 2006.714 92.222.117.115 961a -0.033217220 0.031581741 0.015059831 0.001349028
   
-### sysstats
+### sysstats documentation
 
 Each hour one line is appended to the sysstats file set in the following format
 
