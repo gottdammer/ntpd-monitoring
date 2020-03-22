@@ -34,20 +34,21 @@ s 	RMS jitter
 
 Each hour one line is appended to the sysstats file set in the following format
 
-Units | Description
-MJD | date
-s  | time past midnight
-s  | time since reset
-  | packets received
- | packets for this host
- | current versions
- | old version
- | access denied
- | bad length or format
- | bad authentication
- | declined
- | rate exceeded
- | kiss-o'-death packets sent
+| Units | Description |
+|-------|-------------|
+| MJD | date |
+| s  | time past midnight |
+| s  | time since reset |
+|  | packets received |
+| | packets for this host |
+| | current versions |
+| | old version |
+| | access denied |
+| | bad length or format |
+| | bad authentication |
+| | declined |
+| | rate exceeded |
+| | kiss-o'-death packets sent |
  
      tailf /var/log/ntpstats/sysstats
      58927 52035.251 3599 225 205 225 0 0 0 0 0 0 0
