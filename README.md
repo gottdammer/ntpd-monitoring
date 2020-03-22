@@ -8,7 +8,11 @@ How to monitor NTPD server runnning on Centos7 with ELK
  	* [sysstats documentation](#sysstats-documentation)
 * [Counting NTP clients](#counting-ntp-clients)
 * [Expected logs](#expected-logs)
-       
+* [Export Logs to ELK](#export-logs-to-elk)
+	* [Deploy Filebeat](#deploy-filebeat)
+	* [Configure Logstash](#configure-logstash)
+* [Examples of dashboard on Kibana](#examples-of-dashboard-on-kibana)
+
 ## Activate ntpd logs
 
 Update the ntpd configuration
@@ -90,7 +94,9 @@ Update rsyslog to log NTP traffic in specific file
 Example of log
 
 	# tailf /var/log/ntpstats/iptables.log
-	Mar 19 06:56:10 localhost kernel: [NTP] IN=enp0s3 OUT= MAC=08:00:27:96:57:49:a0:40:a0:8d:29:95:08:00 SRC=185.242.56.3 DST=10.0.0.33 LEN=76 TOS=0x00 PREC=0x00 TTL=44 ID=56768 DF PROTO=UDP SPT=123 DPT=123 LEN=56
+	Mar 19 06:56:10 localhost kernel: [NTP] IN=enp0s3 OUT= MAC=08:00:27:96:57:49:a0:40:a0:8d:29:95:08:00 \
+	SRC=185.242.56.3 DST=10.0.0.33 LEN=76 TOS=0x00 PREC=0x00 TTL=44 ID=56768 \
+	DF PROTO=UDP SPT=123 DPT=123 LEN=56
 	
 ## Expected logs
 
@@ -210,4 +216,7 @@ vim /etc/logstash/conf.d/00-beats.conf
 
 ## Examples of dashboard on Kibana
 
+https://github.com/dmachard/NTPD-monitoring/blob/master/imgs/kibana_nb_ntp_clients.png
+
+https://github.com/dmachard/NTPD-monitoring/blob/master/imgs/kibana_peer_offset.png
 
