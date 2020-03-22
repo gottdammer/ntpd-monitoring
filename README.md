@@ -216,7 +216,7 @@ vim /etc/logstash/conf.d/00-beats.conf
 
 ## Examples of dashboard on Kibana
 
-https://github.com/dmachard/NTPD-monitoring/blob/master/imgs/kibana_nb_ntp_clients.png
+![Ikibana nb clients](https://github.com/dmachard/NTPD-monitoring/blob/master/imgs/kibana_nb_ntp_clients.png)
 
-https://github.com/dmachard/NTPD-monitoring/blob/master/imgs/kibana_peer_offset.png
+![kibana peer offset](https://github.com/dmachard/NTPD-monitoring/blob/master/imgs/kibana_peer_offset.png)
 
