@@ -1,6 +1,6 @@
 # NTPD monitoring with ELK
 
-How to monitor NTPD server with ELK
+How to monitor NTPD server runnning on Centos7 with ELK
 
 ## Table of contents
 * [Activate ntpd logs](#activate-ntpd-logs)
@@ -71,6 +71,27 @@ Each hour one line is appended to the sysstats file set in the following format
   
 ## Counting NTP clients
 
+Install iptables 
+
+	yum remove firewalld && yum install iptables-services
+	systemctl enable iptables.service
+
+Add the rule to log UDP port 123 traffic
+
+	/sbin/iptables -A INPUT -p udp --dport 123 -j LOG --log-prefix='[NTP] ' --log-level debug
+	/usr/libexec/iptables/iptables.init save
+
+Update rsyslog to log NTP traffic in specific file
+
+	touch /etc/rsyslog.d/00-iptables.conf
+	:msg,contains,"[NTP] " /var/log/ntpstats/iptables.log
+	service rsyslog restart
+	
+Example of log
+
+	# tailf /var/log/ntpstats/iptables.log
+	Mar 19 06:56:10 localhost kernel: [NTP] IN=enp0s3 OUT= MAC=08:00:27:96:57:49:a0:40:a0:8d:29:95:08:00 SRC=185.242.56.3 DST=10.0.0.33 LEN=76 TOS=0x00 PREC=0x00 TTL=44 ID=56768 DF PROTO=UDP SPT=123 DPT=123 LEN=56
+	
 ## Expected logs
 
       [root@localhost ntpstats]# ll
@@ -84,4 +105,109 @@ Each hour one line is appended to the sysstats file set in the following format
       -rw-r--r--. 1 ntp  ntp     980 Mar 21 00:46 sysstats.log.20200320
       -rw-r--r--. 1 ntp  ntp    1041 Mar 22 00:35 sysstats.log.20200321
       -rw-r--r--. 2 ntp  ntp     347 Mar 22 08:35 sysstats.log.20200322
+
+## Export Logs to ELK
+
+### Deploy Filebeat
+
+Install filebeat, follow this procedure
+
+Configure filebeat
+
+	vim /etc/filebeat/filebeat.yml
+
+	filebeat.inputs:
+	- type: log
+	  enabled: true
+	  paths:
+	    - /var/log/ntpstats/iptables.log
+	  fields:
+	    logtype: iptables
+
+	- type: log
+	  enabled: true
+	  paths:
+	    - /var/log/ntpstats/peerstats.log
+	  fields:
+	    logtype: peerstats
+
+	- type: log
+	  enabled: true
+	  paths:
+	    - /var/log/ntpstats/sysstats.log
+	  fields:
+	    logtype: sysstats
+    	
+	output.logstash:
+  		hosts: ["<ip_logstash>:5044"]
+	
+Start filebeat
+
+	systemctl start filebeat
+	
+### Configure Logstash
+
+touch /etc/logstash/conf.d/00-beats.conf
+vim /etc/logstash/conf.d/00-beats.conf
+
+	input {
+	  beats {
+	    port => 5044
+	  }
+	}
+
+	filter {
+	  if( [fields][logtype] == "iptables"){
+	    dissect {
+	      mapping => { "message" => "%{} %{} %{} %{} kernel: [NTP] IN=%{} OUT=%{} MAC=%{} SRC=%{ntp_clientip} %{}" }
+	    }
+	    if([ntp_clientip] == "<ip1_ntp_peer") {
+		drop {}
+	    }
+	  }
+	 if( [fields][logtype] == "peerstats"){
+	    dissect {
+	      mapping => { "message" => "%{datemjd} %{timepast_midnight} %{src_addr} %{status_word} %{clock_offset} %{roundtrip_delay} %{dispersion} %{rms_jitter}" }
+	    }
+	   mutate {
+		convert => {
+		  "clock_offset" => "float"
+		  "roundtrip_delay" => "float"
+		  "dispersion" => "float"
+		  "rms_jitter" => "float"
+	       }
+	    }
+	  }
+
+	 if( [fields][logtype] == "sysstats"){
+	    dissect {
+	      mapping => { "message" => "%{date_mjd} %{timepast_midnight} %{timesince_reset} %{pkts_received} %{pkts_generated} %{pkts_ntpv4} %{pkts_ntpv3} %{pkts_denied} %{pkts_bad} %{bad_auth} %{declined} %{rate_exceeded} %{pkts_kiss}" }
+	    }
+	     mutate {
+		convert => {
+		    "pkts_received" => "integer"
+		    "pkts_generated" => "integer"
+		    "pkts_ntpv4" => "integer"
+		    "pkts_ntpv3" => "integer"
+		    "pkts_denied" => "integer"
+		    "pkts_bad" => "integer"
+		    "bad_auth" => "integer"
+		    "declined" => "integer"
+		    "rate_exceeded" => "integer"
+		    "pkts_kiss" => "integer"
+		}
+	    }
+	  }
+	}
+
+	output {
+	  elasticsearch {
+	    hosts => ["http://localhost:9200"]
+	    index => "%{[@metadata][beat]}-%{[@metadata][version]}"
+	  }
+	}
+
+
+## Examples of dashboard on Kibana
+
 
