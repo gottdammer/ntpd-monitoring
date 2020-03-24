@@ -25,7 +25,7 @@ Update the ntpd configuration
  
 Restart the daemon
 
-      systemctl ntpd restart
+      systemctl restart ntpd
       
 ### peerstats documentation
 
