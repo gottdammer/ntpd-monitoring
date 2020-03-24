@@ -97,7 +97,10 @@ Add the rule to log UDP port 123 traffic
 Update rsyslog to log NTP traffic in specific file
 
 	touch /etc/rsyslog.d/00-iptables.conf
+	vim /etc/rsyslog.d/00-iptables.conf
 	:msg,contains,"[NTP] " /var/log/ntpstats/iptables.log
+
+Restart rsyslog
 	service rsyslog restart
 	
 Example of log
