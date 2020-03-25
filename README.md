@@ -101,6 +101,7 @@ Update rsyslog to log NTP traffic in specific file
 	:msg,contains,"[NTP] " /var/log/ntpstats/iptables.log
 
 Restart rsyslog
+
 	service rsyslog restart
 	
 Example of log
